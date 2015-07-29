@@ -131,20 +131,20 @@ describe ::Nexmos::Base do
         subject.make_api_call(api_params_without_required)
       end
 
-      it 'should not call camelize_params' do
+      it 'should not call dasherize_params' do
         stub_request(:get, "https://rest.nexmo.com/test/url?api_key=test_api&api_secret=test_secret&test_call=value").
           with(webmock_default_headers).
           to_return(:status => 200, :body => {}.to_json, :headers => { 'Content-Type' => 'application/json' })
-        expect(subject).not_to receive(:camelize_params)
+        expect(subject).to_not receive(:dasherize_params)
         subject.make_api_call(api_params_without_required, { 'test_call' => 'value' })
       end
 
-      it 'should call camelize_params' do
-        stub_request(:get, "https://rest.nexmo.com/test/url?api_key=test_api&api_secret=test_secret&testCall=value").
+      it 'should call dasherize_params' do
+        stub_request(:get, "https://rest.nexmo.com/test/url?api_key=test_api&api_secret=test_secret&test-call=value").
           with(webmock_default_headers).
           to_return(:status => 200, :body => {}.to_json, :headers => { 'Content-Type' => 'application/json' })
-        expect(subject).to receive(:camelize_params).and_call_original
-        subject.make_api_call(api_params_without_required.merge(:camelize => true), { 'test_call' => 'value' })
+        expect(subject).to receive(:dasherize_params).and_call_original
+        subject.make_api_call(api_params_without_required.merge(:dasherize => true), { 'test_call' => 'value' })
       end
 
       it 'should call get_response' do
@@ -176,30 +176,30 @@ describe ::Nexmos::Base do
       end
 
       it 'should have success? == false on response with status != 200' do
-        stub_request(:get, "https://rest.nexmo.com/test/url?api_key=test_api&api_secret=test_secret&testCall=value").
+        stub_request(:get, "https://rest.nexmo.com/test/url?api_key=test_api&api_secret=test_secret&test-call=value").
           with(webmock_default_headers).
           to_return(:status => 410, :body => {}.to_json, :headers => { 'Content-Type' => 'application/json' })
-        res = subject.make_api_call(api_params_without_required.merge(:camelize => true), { 'test_call' => 'value' })
+        res = subject.make_api_call(api_params_without_required.merge(:dasherize => true), { 'test_call' => 'value' })
         expect(res[:success?]).to be_falsey
         expect(res[:failed?]).to be_falsey
         expect(res[:not_authorized?]).to be_falsey
       end
 
       it 'should have not_authorized? == true' do
-        stub_request(:get, "https://rest.nexmo.com/test/url?api_key=test_api&api_secret=test_secret&testCall=value").
+        stub_request(:get, "https://rest.nexmo.com/test/url?api_key=test_api&api_secret=test_secret&test-call=value").
           with(webmock_default_headers).
           to_return(:status => 401, :body => {}.to_json, :headers => { 'Content-Type' => 'application/json' })
-        res = subject.make_api_call(api_params_without_required.merge(:camelize => true), { 'test_call' => 'value' })
+        res = subject.make_api_call(api_params_without_required.merge(:dasherize => true), { 'test_call' => 'value' })
         expect(res[:success?]).to be_falsey
         expect(res[:not_authorized?]).to be_truthy
         expect(res[:failed?]).to be_falsey
       end
 
       it 'should have failed? == true' do
-        stub_request(:get, "https://rest.nexmo.com/test/url?api_key=test_api&api_secret=test_secret&testCall=value").
+        stub_request(:get, "https://rest.nexmo.com/test/url?api_key=test_api&api_secret=test_secret&test-call=value").
           with(webmock_default_headers).
           to_return(:status => 420, :body => {}.to_json, :headers => { 'Content-Type' => 'application/json' })
-        res = subject.make_api_call(api_params_without_required.merge(:camelize => true), { 'test_call' => 'value' })
+        res = subject.make_api_call(api_params_without_required.merge(:dasherize => true), { 'test_call' => 'value' })
         expect(res[:success?]).to be_falsey
         expect(res[:not_authorized?]).to be_falsey
         expect(res[:failed?]).to be_truthy

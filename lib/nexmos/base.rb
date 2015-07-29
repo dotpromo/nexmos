@@ -32,7 +32,7 @@ module Nexmos
     def make_api_call(args, params = {})
       normalize_params(params)
       check_required_params(args, params)
-      camelize_params(params) if args[:camelize]
+      dasherize_params(params) if args[:dasherize]
       params.merge!(@default_params)
       get_response(args, params)
     end
@@ -64,12 +64,12 @@ module Nexmos
       params.stringify_keys!
     end
 
-    def camelize_params(params)
+    def dasherize_params(params)
       if params.respond_to?(:transform_keys!)
-        params.transform_keys! { |key| key.camelize(:lower) }
+        params.transform_keys! { |key| key.dasherize }
       else
         params.keys.each do |key|
-          params[key.camelize(:lower)] = params.delete(key)
+          params[key.dasherize] = params.delete(key)
         end
       end
     end
