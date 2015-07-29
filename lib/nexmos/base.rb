@@ -24,6 +24,7 @@ module Nexmos
         conn.request :url_encoded
         conn.response :mashrashify
         conn.response :json, content_type: /\bjson$/
+        conn.response :logger if ::Nexmos.debug
         conn.adapter ::Faraday.default_adapter
       end
     end
