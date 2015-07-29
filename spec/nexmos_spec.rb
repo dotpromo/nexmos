@@ -22,6 +22,11 @@ describe ::Nexmos do
       it { is_expected.to be_nil }
     end
 
+    describe '#endpoint' do
+      subject { super().endpoint }
+      it { is_expected.to eq('https://rest.nexmo.com') }
+    end
+
     describe '#logger' do
       subject { super().logger }
       it { is_expected.to be_kind_of(::Logger) }
@@ -60,6 +65,12 @@ describe ::Nexmos do
         expect(subject.api_secret).to eq('test-api-secret')
       end
 
+      it 'should set endpoint' do
+        subject.setup do |c|
+          c.endpoint = 'https://rest-sandbox.nexmo.com'
+        end
+        expect(subject.endpoint).to eq('https://rest-sandbox.nexmo.com')
+      end
     end
 
     context 'double call' do
@@ -74,5 +85,4 @@ describe ::Nexmos do
       end
     end
   end
-
 end

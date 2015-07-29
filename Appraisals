@@ -11,5 +11,5 @@ appraise "activesupport-4.1" do
 end
 
 appraise "activesupport-4.2" do
-  gem "activesupport", "~> 4.2.0.beta4"
+  gem "activesupport", "~> 4.2.0"
 end

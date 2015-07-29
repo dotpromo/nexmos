@@ -11,41 +11,22 @@ describe ::Nexmos::Base do
     }
   end
 
+  let(:default_faraday_options) do
+    {
+      :url     => 'https://rest.nexmo.com',
+      :headers => {
+        :accept     => 'application/json',
+        :user_agent => ::Nexmos.user_agent
+      }
+    }
+  end
+
   before(:each) do
     ::Nexmos.reset!
   end
 
   context 'class' do
     subject { described_class }
-    let(:default_faraday_options) do
-      {
-        :url     => 'https://rest.nexmo.com',
-        :headers => {
-          :accept     => 'application/json',
-          :user_agent => ::Nexmos.user_agent
-        }
-      }
-    end
-
-    describe '#faraday_options' do
-      subject { super().faraday_options }
-      it { is_expected.to eq(default_faraday_options) }
-    end
-
-    describe '#connection' do
-      subject { super().connection }
-      it { is_expected.to be_kind_of(::Faraday::Connection) }
-    end
-
-    context 'faraday_options' do
-      it 'should have custom user agent' do
-        ::Nexmos.setup do |c|
-          c.user_agent = 'test user agent'
-        end
-        default_faraday_options[:headers][:user_agent] = 'test user agent'
-        expect(subject.faraday_options).to eq(default_faraday_options)
-      end
-    end
 
     context 'define_api_calls' do
       it 'should call define_method' do
@@ -62,7 +43,6 @@ describe ::Nexmos::Base do
         instance.get_balance
       end
     end
-
   end
 
   context 'instance' do
@@ -91,6 +71,23 @@ describe ::Nexmos::Base do
     describe '#connection' do
       subject { super().connection }
       it { is_expected.to be_kind_of(::Faraday::Connection) }
+    end
+
+    describe '#faraday_options' do
+      subject { super().faraday_options }
+      it { is_expected.to eq(default_faraday_options) }
+    end
+
+    context 'faraday_options' do
+      it 'should have custom user agent' do
+        ::Nexmos.setup do |c|
+          c.user_agent = 'test user agent'
+          c.endpoint = 'https://rest-sandbox.nexmo.com'
+        end
+        default_faraday_options[:headers][:user_agent] = 'test user agent'
+        default_faraday_options[:url] = 'https://rest-sandbox.nexmo.com'
+        expect(subject.faraday_options).to eq(default_faraday_options)
+      end
     end
 
     context 'make_api_call' do

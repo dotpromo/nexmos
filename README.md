@@ -54,6 +54,16 @@ end
 
 And then you can call all clients without providing key and secret.
 
+If you need to use Sandbox then you can set endpoint host with next content:
+
+```ruby
+Nexmos.setup do |n|
+  n.api_key    = 'api_key'
+  n.api_secret = 'api_secret'
+  n.endpoint = 'http://rest-sandbox.nexmo.com'
+end
+```
+
 ## More details about api calls
 
 More details about api calls you can found in the lib/api.yml file.

@@ -7,7 +7,7 @@ require 'nexmos/version'
 require 'nexmos/base'
 module Nexmos
   extend self
-  attr_accessor :api_key, :api_secret, :debug
+  attr_accessor :api_key, :api_secret, :debug, :endpoint
   attr_writer :user_agent, :logger
 
   # ensures the setup only gets run once
@@ -19,6 +19,7 @@ module Nexmos
     @user_agent = nil
     @api_key = nil
     @api_secret = nil
+    @endpoint = 'https://rest.nexmo.com'
   end
 
   def user_agent

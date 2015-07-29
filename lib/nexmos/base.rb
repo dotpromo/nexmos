@@ -9,8 +9,23 @@ module Nexmos
       }
     end
 
+    def faraday_options
+      {
+        url:     ::Nexmos.endpoint,
+        headers: {
+          accept:     'application/json',
+          user_agent: ::Nexmos.user_agent
+        }
+      }
+    end
+
     def connection
-      self.class.connection.dup
+      @connection ||= ::Faraday::Connection.new(faraday_options) do |conn|
+        conn.request :url_encoded
+        conn.response :mashrashify
+        conn.response :json, content_type: /\bjson$/
+        conn.adapter ::Faraday.default_adapter
+      end
     end
 
     def make_api_call(args, params = {})
@@ -73,25 +88,6 @@ module Nexmos
             params = args[0] || {}
             make_api_call(v, params)
           end
-        end
-      end
-
-      def faraday_options
-        {
-          url:     'https://rest.nexmo.com',
-          headers: {
-            accept:     'application/json',
-            user_agent: ::Nexmos.user_agent
-          }
-        }
-      end
-
-      def connection
-        @connection ||= Faraday::Connection.new(faraday_options) do |conn|
-          conn.request :url_encoded
-          conn.response :mashrashify
-          conn.response :json, content_type: /\bjson$/
-          conn.adapter Faraday.default_adapter
         end
       end
     end # self
